@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electricity Bill Calculator</title>
+<link rel="stylesheet" href="resources/css/style.css">
+</head>
+<body>
+<div class="page">
+
+    <div class="eyebrow"><span class="dot"></span> Meter Reading Portal</div>
+    <h1 class="title">Electricity Bill <span class="accent">Calculator</span></h1>
+    <p class="subtitle">Enter your latest meter reading to generate an itemised bill</p>
+
+    <div class="panel">
+        <div class="panel-label">Unit Reading</div>
+
+        <div class="led-display">
+            <div class="led-label">Units Consumed</div>
+            <div class="led-digits" id="ledPreview">000000<span class="unit-suffix">kWh</span></div>
+        </div>
+
+        <form action="CalculateBillServlet" method="post">
+            <div class="field">
+                <label for="consumerName">Consumer Name</label>
+                <input type="text" id="consumerName" name="consumerName" placeholder="e.g. Rahul Sharma" required>
+            </div>
+
+            <div class="field">
+                <label for="consumerNo">Consumer Number</label>
+                <input type="text" id="consumerNo" name="consumerNo" placeholder="e.g. CN-004512">
+            </div>
+
+            <div class="field">
+                <label for="units">Units Consumed (kWh)</label>
+                <input type="number" id="units" name="units" placeholder="e.g. 180" min="0" required oninput="updateLed(this.value)">
+            </div>
+
+            <button type="submit" class="btn">Generate Bill &nbsp;→</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <div class="panel-label">Tariff Ladder — Rs. per Unit by Slab</div>
+
+        <div class="ladder">
+            <div class="step"><span>0–50</span></div>
+            <div class="step"><span>51–150</span></div>
+            <div class="step"><span>151–250</span></div>
+            <div class="step"><span>250+</span></div>
+        </div>
+        <div class="ladder-legend">
+            <div>First 50<span class="rate">₹3.50</span></div>
+            <div>Next 100<span class="rate">₹4.00</span></div>
+            <div>Next 100<span class="rate">₹5.20</span></div>
+            <div>Above 250<span class="rate">₹6.50</span></div>
+        </div>
+    </div>
+
+    <p class="footnote">Bill includes ₹30 meter rent + 3% electricity duty on energy charges.</p>
+</div>
+
+<script>
+    function updateLed(value) {
+        var digits = (value || '0').toString().replace(/\D/g, '');
+        if (digits.length === 0) { digits = '0'; }
+        var padded = digits.padStart(6, '0');
+        document.getElementById('ledPreview').innerHTML =
+            padded + '<span class="unit-suffix">kWh</span>';
+    }
+</script>
+</body>
+</html>

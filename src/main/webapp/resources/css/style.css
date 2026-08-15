@@ -1,0 +1,454 @@
+/* ============================================================
+   Electricity Bill Calculator — "Digital Meter" theme
+   Signature element: LED-style digit readouts + tariff step-ladder
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0d1117;
+    --bg-grid: #11161d;
+    --panel: #161c25;
+    --panel-2: #1c2430;
+    --border: #2a3444;
+    --border-soft: #232b38;
+    --text: #e8edf4;
+    --muted: #8b98ab;
+    --muted-2: #5f6d80;
+
+    --amber: #ffb020;
+    --amber-soft: rgba(255, 176, 32, 0.14);
+    --amber-glow: rgba(255, 176, 32, 0.35);
+    --blue: #4fc3ff;
+    --danger: #ff6b5e;
+    --danger-soft: rgba(255, 107, 94, 0.12);
+
+    --radius: 10px;
+    --radius-sm: 6px;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+    --sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    font-family: var(--sans);
+    color: var(--text);
+    background:
+        radial-gradient(circle at 15% 0%, rgba(255, 176, 32, 0.06), transparent 45%),
+        radial-gradient(circle at 85% 100%, rgba(79, 195, 255, 0.05), transparent 45%),
+        var(--bg);
+    min-height: 100vh;
+    padding: 40px 16px 60px;
+    line-height: 1.5;
+}
+
+.page {
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+/* ---------- Header / eyebrow ---------- */
+
+.eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.eyebrow .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 8px 1px var(--amber-glow);
+    animation: pulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .eyebrow .dot { animation: none; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+}
+
+h1.title {
+    text-align: center;
+    font-size: 1.65rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+}
+
+.title .accent {
+    color: var(--amber);
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin: 0 0 32px;
+}
+
+/* ---------- Faceplate panel ---------- */
+
+.panel {
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px 24px 24px;
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.03) inset,
+        0 20px 40px -20px rgba(0, 0, 0, 0.6);
+    position: relative;
+}
+
+.panel + .panel {
+    margin-top: 18px;
+}
+
+.panel-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    margin-bottom: 14px;
+}
+
+/* ---------- LED digit readout (signature element) ---------- */
+
+.led-display {
+    background: #0a0d12;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    margin-bottom: 22px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.led-display .led-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    color: var(--muted-2);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.led-digits {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 2.4rem;
+    letter-spacing: 0.06em;
+    color: var(--amber);
+    text-shadow: 0 0 12px var(--amber-glow), 0 0 2px var(--amber-glow);
+    line-height: 1;
+    word-break: break-all;
+}
+
+.led-digits .unit-suffix {
+    font-size: 1rem;
+    color: var(--muted);
+    text-shadow: none;
+    margin-left: 8px;
+    letter-spacing: 0.04em;
+}
+
+.led-digits.large {
+    font-size: 2.9rem;
+}
+
+/* ---------- Form ---------- */
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.field {
+    margin-bottom: 18px;
+}
+
+.field label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 7px;
+}
+
+.field input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 1rem;
+    padding: 12px 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field input::placeholder {
+    color: var(--muted-2);
+}
+
+.field input:focus {
+    outline: none;
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px var(--amber-soft);
+}
+
+.field input:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 1px;
+}
+
+.btn {
+    appearance: none;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--amber);
+    color: #1a1305;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 14px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+    transition: filter 0.15s, transform 0.1s;
+}
+
+.btn:hover {
+    filter: brightness(1.08);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+}
+
+.btn.secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn.secondary:hover {
+    border-color: var(--amber);
+    filter: none;
+}
+
+/* ---------- Tariff step-ladder (semantic: real tiered structure) ---------- */
+
+.ladder {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    height: 108px;
+    margin: 6px 0 4px;
+}
+
+.ladder .step {
+    flex: 1;
+    background: var(--panel-2);
+    border: 1px solid var(--border-soft);
+    border-top: 2px solid var(--muted-2);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 6px;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.ladder .step:nth-child(1) { height: 40%; }
+.ladder .step:nth-child(2) { height: 58%; }
+.ladder .step:nth-child(3) { height: 78%; }
+.ladder .step:nth-child(4) { height: 100%; }
+
+.ladder .step.filled {
+    border-top-color: var(--amber);
+    background: var(--amber-soft);
+    color: var(--amber);
+}
+
+.ladder-legend {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-align: center;
+}
+
+.ladder-legend .rate {
+    display: block;
+    color: var(--text);
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+/* ---------- Ledger / receipt table ---------- */
+
+.ledger {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.86rem;
+}
+
+.ledger th {
+    text-align: left;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    font-weight: 600;
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.ledger th.num, .ledger td.num {
+    text-align: right;
+}
+
+.ledger td {
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--border-soft);
+    color: var(--text);
+}
+
+.ledger td.label {
+    color: var(--muted);
+}
+
+.ledger tr.total td {
+    border-bottom: none;
+    border-top: 2px solid var(--border);
+    padding-top: 14px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--amber);
+}
+
+.summary-row td {
+    padding: 6px 0;
+    color: var(--muted);
+    border-bottom: none;
+    font-size: 0.82rem;
+}
+
+.summary-row td.num {
+    color: var(--text);
+}
+
+/* ---------- Meta rows (consumer info) ---------- */
+
+.meta {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.meta strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* ---------- Error state ---------- */
+
+.error-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--danger-soft);
+    border: 1px solid rgba(255, 107, 94, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.error-box .glyph {
+    font-family: var(--mono);
+    font-weight: 700;
+    color: var(--danger);
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.error-box p {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.92rem;
+}
+
+.error-box .kicker {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--danger);
+    margin-bottom: 4px;
+}
+
+/* ---------- Footer note ---------- */
+
+.footnote {
+    text-align: center;
+    color: var(--muted-2);
+    font-size: 0.75rem;
+    margin-top: 24px;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 480px) {
+    body { padding: 28px 12px 40px; }
+    .panel { padding: 20px 16px; }
+    .led-digits { font-size: 1.9rem; }
+    .led-digits.large { font-size: 2.2rem; }
+    h1.title { font-size: 1.35rem; }
+    .ladder { height: 84px; }
+    .ladder-legend { font-size: 0.62rem; }
+}
